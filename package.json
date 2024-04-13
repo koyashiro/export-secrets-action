@@ -1,0 +1,46 @@
+{
+  "name": "export-secrets-action",
+  "version": "0.0.0",
+  "description": "Export GitHub Actions secrets as environment variables",
+  "keywords": [
+    "actions"
+  ],
+  "homepage": "https://github.com/koyashiro/export-secrets-action",
+  "bugs": {
+    "url": "https://github.com/koyashiro/export-secrets-action/issues"
+  },
+  "license": "MIT",
+  "author": "koyashiro <develop@koyashiro.net>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koyashiro/export-secrets-action.git"
+  },
+  "scripts": {
+    "build": "ncc build src/index.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@actions/core": "1.10.1",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "7.6.0",
+    "@typescript-eslint/parser": "7.6.0",
+    "@vercel/ncc": "0.38.1",
+    "@vitest/coverage-v8": "1.4.0",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "9.1.0",
+    "prettier": "3.2.5",
+    "typescript": "5.4.5",
+    "vitest": "1.4.0"
+  },
+  "private": true,
+  "volta": {
+    "node": "20.12.2",
+    "npm": "10.5.2"
+  }
+}

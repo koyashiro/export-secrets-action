@@ -1,0 +1,10 @@
+name: export-secrets-action
+author: koyashiro <develop@koyashiro.net>
+description: Export GitHub Actions secrets as environment variables
+inputs:
+  secrets:
+    description: JSON representation of secrets
+    required: true
+runs:
+  using: node20
+  main: dist/index.js

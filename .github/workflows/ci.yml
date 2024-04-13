@@ -1,0 +1,122 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version-file: package.json
+          cache: npm
+      - name: Run npm ci
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Check diff
+        run: |
+          if ! git diff --no-patch --exit-code; then
+            echo Diff found 1>&2
+            exit 1
+          fi
+
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version-file: package.json
+          cache: npm
+      - name: Run npm ci
+        run: npm ci
+      - name: Run ESLint
+        run: npm run lint
+
+  format:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version-file: package.json
+          cache: npm
+      - name: Run npm ci
+        run: npm ci
+      - name: Run Prettier format check
+        run: npm run format:check
+
+  test-node:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version-file: package.json
+          cache: npm
+      - name: Run npm ci
+        run: npm ci
+      - name: Test
+        run: npm test
+
+  test-action:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Run export-secrets-action
+        uses: ./
+        with:
+          secrets: '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C"}'
+      - name: Check environment variables
+        run: |
+          EXPECTED_VALUE_KEY_A='VALUE_A'
+          EXPECTED_VALUE_KEY_B='VALUE_B'
+          EXPECTED_VALUE_KEY_C='VALUE_C'
+
+          FAILED='false'
+
+          if [ "$KEY_A" = "$EXPECTED_VALUE_KEY_A" ]; then
+            echo 'PASSED: VALUE_A'
+          else
+            echo 'FAILED: VALUE_A' 1>&2
+            echo "  expected: $EXPECTED_VALUE_KEY_A" 1>&2
+            echo "  actual: $KEY_A" 1>&2
+            FAILED='true'
+          fi
+
+          if [ "$KEY_B" = "$EXPECTED_VALUE_KEY_B" ]; then
+            echo 'PASSED: VALUE_B'
+          else
+            echo 'FAILED: VALUE_B' 1>&2
+            echo "  expected: $EXPECTED_VALUE_KEY_B" 1>&2
+            echo "  actual: $KEY_B" 1>&2
+            FAILED='true'
+          fi
+
+          if [ "$KEY_C" = "$EXPECTED_VALUE_KEY_C" ]; then
+            echo 'PASSED: VALUE_C'
+          else
+            echo 'FAILED: VALUE_C' 1>&2
+            echo "  expected: $EXPECTED_VALUE_KEY_C" 1>&2
+            echo "  actual: $KEY_C" 1>&2
+            FAILED='true'
+          fi
+
+          if [ "$FAILED" = 'true' ]; then
+            exit 1
+          fi
