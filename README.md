@@ -6,7 +6,7 @@ Export GitHub Actions secrets as environment variables.
 
 ```yml
 steps:
-  - uses: koyashiro/export-secrets-action@v0.0.0
+  - uses: koyashiro/export-secrets-action@v0.1.0
     with:
       secrets: ${{ toJSON(secrets) }}
 ```
