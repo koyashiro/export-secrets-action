@@ -5,6 +5,9 @@ inputs:
   secrets:
     description: JSON representation of secrets
     required: true
+  downcase-tf-var:
+    description: Set this option if you want to downcase the secrets starting with `TF_VAR_`
+    required: false
 runs:
   using: node20
   main: dist/index.js
