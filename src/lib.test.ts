@@ -5,11 +5,16 @@ import { exportSecrets } from "./lib";
 describe("exportSecrets()", () => {
   describe("success", () => {
     const coreMock = {
-      getInput: vi
-        .fn()
-        .mockReturnValue(
-          '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C"}',
-        ),
+      getInput: vi.fn().mockImplementation((s: string) => {
+        switch (s) {
+          case "secrets":
+            return '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C","TF_VAR_KEY_D":"VALUE_D"}';
+          case "downcase-tf-var":
+            return "";
+          default:
+            return "";
+        }
+      }),
       exportVariable: vi.fn(),
     };
 
@@ -23,7 +28,11 @@ describe("exportSecrets()", () => {
       expect(coreMock.getInput).toHaveBeenCalledWith("secrets");
     });
 
-    it("calls exportVariable() 3 times", () => {
+    it('calls getInput() with "downcase-tf-var"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
+    });
+
+    it("calls exportVariable() 4 times", () => {
       expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
         1,
         "KEY_A",
@@ -39,12 +48,79 @@ describe("exportSecrets()", () => {
         "KEY_C",
         "VALUE_C",
       );
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        4,
+        "TF_VAR_KEY_D",
+        "VALUE_D",
+      );
+    });
+  });
+
+  describe("success_downcase-tf-var", () => {
+    const coreMock = {
+      getInput: vi.fn().mockImplementation((s: string) => {
+        switch (s) {
+          case "secrets":
+            return '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C","TF_VAR_KEY_D":"VALUE_D"}';
+          case "downcase-tf-var":
+            return "true";
+          default:
+            return "";
+        }
+      }),
+      exportVariable: vi.fn(),
+    };
+
+    it("does not throws an error", () => {
+      expect(() => {
+        exportSecrets(coreMock as unknown as typeof core);
+      }).not.toThrow();
+    });
+
+    it('calls getInput() with "secrets"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("secrets");
+    });
+
+    it('calls getInput() with "downcase-tf-var"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
+    });
+
+    it("calls exportVariable() 4 times", () => {
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        1,
+        "KEY_A",
+        "VALUE_A",
+      );
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        2,
+        "KEY_B",
+        "VALUE_B",
+      );
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        3,
+        "KEY_C",
+        "VALUE_C",
+      );
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        4,
+        "TF_VAR_key_d",
+        "VALUE_D",
+      );
     });
   });
 
   describe("secrets is empty", () => {
     const coreMock = {
-      getInput: vi.fn().mockReturnValue(""),
+      getInput: vi.fn().mockImplementation((s: string) => {
+        switch (s) {
+          case "secrets":
+            return "{";
+          case "downcase-tf-var":
+            return "";
+          default:
+            return "";
+        }
+      }),
       exportVariable: vi.fn(),
     };
 
@@ -56,6 +132,10 @@ describe("exportSecrets()", () => {
 
     it('calls getInput() with "secrets"', () => {
       expect(coreMock.getInput).toHaveBeenCalledWith("secrets");
+    });
+
+    it('calls getInput() with "downcase-tf-var"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
     });
 
     it("does not calls exportVariable()", () => {
@@ -65,7 +145,16 @@ describe("exportSecrets()", () => {
 
   describe("secret is invalid JSON", () => {
     const coreMock = {
-      getInput: vi.fn().mockReturnValue("{"),
+      getInput: vi.fn().mockImplementation((s: string) => {
+        switch (s) {
+          case "secrets":
+            return "{";
+          case "downcase-tf-var":
+            return "";
+          default:
+            return "";
+        }
+      }),
       exportVariable: vi.fn(),
     };
 
@@ -77,6 +166,10 @@ describe("exportSecrets()", () => {
 
     it('calls getInput() with "secrets"', () => {
       expect(coreMock.getInput).toHaveBeenCalledWith("secrets");
+    });
+
+    it('calls getInput() with "downcase-tf-var"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
     });
 
     it("does not calls exportVariable()", () => {
