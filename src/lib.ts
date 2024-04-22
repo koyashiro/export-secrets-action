@@ -21,7 +21,8 @@ export function exportSecrets(core: ActionsCore) {
         `TF_VAR_${key.replace(/^TF_VAR_/, "").toLowerCase()}`,
         value,
       );
+    } else {
+      core.exportVariable(key, value);
     }
-    core.exportVariable(key, value);
   }
 }
