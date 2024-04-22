@@ -8,6 +8,7 @@ const secretsSchema = z.record(z.string(), z.string());
 export function exportSecrets(core: ActionsCore) {
   const secretsJson = core.getInput("secrets");
   const downcaseTfVar = core.getInput("downcase-tf-var") === "true";
+  const downcaseTfToken = core.getInput("downcase-tf-token") === "true";
 
   if (!secretsJson) {
     throw new Error("secrets is required");
@@ -21,8 +22,17 @@ export function exportSecrets(core: ActionsCore) {
         `TF_VAR_${key.replace(/^TF_VAR_/, "").toLowerCase()}`,
         value,
       );
-    } else {
-      core.exportVariable(key, value);
+      return;
     }
+
+    if (downcaseTfToken && key.startsWith("TF_TOKEN_")) {
+      core.exportVariable(
+        `TF_TOKEN_${key.replace(/^TF_TOKEN_/, "").toLowerCase()}`,
+        value,
+      );
+      return;
+    }
+
+    core.exportVariable(key, value);
   }
 }

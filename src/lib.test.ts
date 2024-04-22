@@ -11,6 +11,8 @@ describe("exportSecrets()", () => {
             return '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C","TF_VAR_KEY_D":"VALUE_D"}';
           case "downcase-tf-var":
             return "";
+          case "downcase-tf-token":
+            return "";
           default:
             return "";
         }
@@ -30,6 +32,10 @@ describe("exportSecrets()", () => {
 
     it('calls getInput() with "downcase-tf-var"', () => {
       expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
+    });
+
+    it('calls getInput() with "downcase-tf-token"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-token");
     });
 
     it("calls exportVariable() 4 times", () => {
@@ -56,13 +62,15 @@ describe("exportSecrets()", () => {
     });
   });
 
-  describe("success_downcase-tf-var", () => {
+  describe("success_downcase-tf-token", () => {
     const coreMock = {
       getInput: vi.fn().mockImplementation((s: string) => {
         switch (s) {
           case "secrets":
-            return '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C","TF_VAR_KEY_D":"VALUE_D"}';
+            return '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C","TF_TOKEN_EXAMPLE_COM":"xyz"}';
           case "downcase-tf-var":
+            return "";
+          case "downcase-tf-token":
             return "true";
           default:
             return "";
@@ -83,6 +91,69 @@ describe("exportSecrets()", () => {
 
     it('calls getInput() with "downcase-tf-var"', () => {
       expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
+    });
+
+    it('calls getInput() with "downcase-tf-token"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-token");
+    });
+
+    it("calls exportVariable() 4 times", () => {
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        1,
+        "KEY_A",
+        "VALUE_A",
+      );
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        2,
+        "KEY_B",
+        "VALUE_B",
+      );
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        3,
+        "KEY_C",
+        "VALUE_C",
+      );
+      expect(coreMock.exportVariable).toHaveBeenNthCalledWith(
+        4,
+        "TF_TOKEN_example_com",
+        "xyz",
+      );
+    });
+  });
+
+  describe("success_downcase-tf-var", () => {
+    const coreMock = {
+      getInput: vi.fn().mockImplementation((s: string) => {
+        switch (s) {
+          case "secrets":
+            return '{"KEY_A":"VALUE_A","KEY_B":"VALUE_B","KEY_C":"VALUE_C","TF_VAR_KEY_D":"VALUE_D"}';
+          case "downcase-tf-var":
+            return "true";
+          case "downcase-tf-token":
+            return "";
+          default:
+            return "";
+        }
+      }),
+      exportVariable: vi.fn(),
+    };
+
+    it("does not throws an error", () => {
+      expect(() => {
+        exportSecrets(coreMock as unknown as typeof core);
+      }).not.toThrow();
+    });
+
+    it('calls getInput() with "secrets"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("secrets");
+    });
+
+    it('calls getInput() with "downcase-tf-var"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
+    });
+
+    it('calls getInput() with "downcase-tf-token"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-token");
     });
 
     it("calls exportVariable() 4 times", () => {
@@ -138,6 +209,10 @@ describe("exportSecrets()", () => {
       expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
     });
 
+    it('calls getInput() with "downcase-tf-token"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-token");
+    });
+
     it("does not calls exportVariable()", () => {
       expect(coreMock.exportVariable).not.toHaveBeenCalled();
     });
@@ -150,6 +225,8 @@ describe("exportSecrets()", () => {
           case "secrets":
             return "{";
           case "downcase-tf-var":
+            return "";
+          case "downcase-tf-token":
             return "";
           default:
             return "";
@@ -170,6 +247,10 @@ describe("exportSecrets()", () => {
 
     it('calls getInput() with "downcase-tf-var"', () => {
       expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-var");
+    });
+
+    it('calls getInput() with "downcase-tf-token"', () => {
+      expect(coreMock.getInput).toHaveBeenCalledWith("downcase-tf-token");
     });
 
     it("does not calls exportVariable()", () => {
