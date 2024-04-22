@@ -16,7 +16,7 @@
     "url": "https://github.com/koyashiro/export-secrets-action.git"
   },
   "scripts": {
-    "build": "ncc build src/index.ts",
+    "build": "ncc build --license licenses.txt src/index.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
