@@ -30856,7 +30856,9 @@ function exportSecrets(core) {
         if (downcaseTfVar && key.startsWith("TF_VAR_")) {
             core.exportVariable(`TF_VAR_${key.replace(/^TF_VAR_/, "").toLowerCase()}`, value);
         }
-        core.exportVariable(key, value);
+        else {
+            core.exportVariable(key, value);
+        }
     }
 }
 
