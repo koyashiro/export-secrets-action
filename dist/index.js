@@ -31070,11 +31070,11 @@ function exportSecrets(core) {
     for (const [key, value] of Object.entries(secrets)) {
         if (downcaseTfVar && key.startsWith("TF_VAR_")) {
             core.exportVariable(`TF_VAR_${key.replace(/^TF_VAR_/, "").toLowerCase()}`, value);
-            return;
+            continue;
         }
         if (downcaseTfToken && key.startsWith("TF_TOKEN_")) {
             core.exportVariable(`TF_TOKEN_${key.replace(/^TF_TOKEN_/, "").toLowerCase()}`, value);
-            return;
+            continue;
         }
         core.exportVariable(key, value);
     }

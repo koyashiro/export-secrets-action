@@ -22,7 +22,7 @@ export function exportSecrets(core: ActionsCore) {
         `TF_VAR_${key.replace(/^TF_VAR_/, "").toLowerCase()}`,
         value,
       );
-      return;
+      continue;
     }
 
     if (downcaseTfToken && key.startsWith("TF_TOKEN_")) {
@@ -30,7 +30,7 @@ export function exportSecrets(core: ActionsCore) {
         `TF_TOKEN_${key.replace(/^TF_TOKEN_/, "").toLowerCase()}`,
         value,
       );
-      return;
+      continue;
     }
 
     core.exportVariable(key, value);
