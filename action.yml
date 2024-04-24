@@ -1,4 +1,4 @@
-name: export-secrets-action
+name: export-secrets
 author: koyashiro <develop@koyashiro.net>
 description: Export GitHub Actions secrets as environment variables
 inputs:

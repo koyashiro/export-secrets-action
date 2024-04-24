@@ -1,19 +1,19 @@
 {
-  "name": "export-secrets-action",
+  "name": "export-secrets",
   "version": "0.4.1",
   "description": "Export GitHub Actions secrets as environment variables",
   "keywords": [
     "actions"
   ],
-  "homepage": "https://github.com/koyashiro/export-secrets-action",
+  "homepage": "https://github.com/koyashiro/export-secrets",
   "bugs": {
-    "url": "https://github.com/koyashiro/export-secrets-action/issues"
+    "url": "https://github.com/koyashiro/export-secrets/issues"
   },
   "license": "MIT",
   "author": "koyashiro <develop@koyashiro.net>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/koyashiro/export-secrets-action.git"
+    "url": "https://github.com/koyashiro/export-secrets.git"
   },
   "scripts": {
     "build": "ncc build --license licenses.txt src/index.ts",
